@@ -6,6 +6,9 @@ int rows = 5;
 int cols = 5;
 Sqr[][] grid = new Sqr[rows][cols];
 
+int frames = 0;
+int maxFrames = 70;
+
 void setup() {
   fillGrid();
   size(400, 400);
@@ -27,14 +30,18 @@ void draw() {
       grid[i][j].move();
     }
   }
-  // saveFrame("####.png");
+  saveFrame("#####.png");
+  frames++;
+  if (frames > maxFrames) {
+    exit();
+  }
 }
 
 void fillGrid() {
   float dir = 1.0;
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
-      grid[i][j] = new Sqr(0 + (i * 100), 0 + (j * 100), 0.02 * dir);
+      grid[i][j] = new Sqr(0 + (i * 100), 0 + (j * 100), 0.03 * dir);
       dir = dir * -1.0;
     }
   }

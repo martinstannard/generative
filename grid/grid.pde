@@ -16,11 +16,11 @@ boolean record = false;
 boolean stop = true;
 
 void setup() {
-  fillGrid(50, 55);
+  fill(black);
+  fillGrid(50, 45);
   size(400, 400);
   noStroke();
   rectMode(CENTER);
-  fill(black);
 }
 
 void draw() {
@@ -78,7 +78,7 @@ class Sqr {
     push();
     translate(x, y);
     rotate(ang*4.0);
-    scale(sin(ang));
+    //scale(sin(ang));
     rect(0, 0, side, side);
     pop();
   }

@@ -6,13 +6,17 @@ color white = color(255, 255, 255);
 float c = 0.0;
 int rows = 10;
 int cols = 10;
+int side = 400;
 Sqr[][] grid = new Sqr[rows][cols];
 
 int frames = 0;
 int maxFrames = 90;
 
+boolean record = false;
+boolean stop = false;
+
 void setup() {
-  fillGrid(50);
+  fillGrid(50, 55);
   size(400, 400);
   noStroke();
   rectMode(CENTER);
@@ -27,20 +31,27 @@ void draw() {
       grid[i][j].move();
     }
   }
-  saveFrame("#####.png");
+  if (record) {
+    saveFrame("#####.png");
+  }
   frames++;
-  if (frames > maxFrames) {
+  if (stop && frames > maxFrames) {
     exit();
   }
 }
 
-void fillGrid(int spacing) {
+void fillGrid(int spacing, int length) {
   float dir = 1.0;
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
-      grid[i][j] = new Sqr(0 + (i * spacing), 0 + (j * spacing), 0.02 * dir, 48.0);
-      dir = dir * -1.0;
+      if ((i * j) % 2 == 0) {
+        dir = dir * -1.0;
+      }
+      grid[i][j] = new Sqr(0 + (i * spacing), 0 + (j * spacing), 0.01 * dir, length);
     }
+    // if (i % 2 == 0) {
+    //   dir = dir * -1.0;
+    // }
   }
 }
 
@@ -66,7 +77,8 @@ class Sqr {
   void display() {
     push();
     translate(x, y);
-    rotate(ang);
+    rotate(ang*4.0);
+    scale(sin(ang));
     rect(0, 0, side, side);
     pop();
   }

@@ -7,7 +7,7 @@ float c = 0.0;
 int rows = 10;
 int cols = 10;
 int side = 400;
-Sqr[][] grid = new Sqr[rows][cols];
+Cell[][] grid = new Cell[rows][cols];
 
 int tick = 0;
 int frames = 0;
@@ -54,7 +54,7 @@ void fillGrid(int spacing, int length) {
   }
 }
 
-class Sqr {
+class Cell {
   int x;
   int y;
   float rot;
@@ -83,4 +83,20 @@ class Sqr {
     rect(0, 0, side, side);
     pop();
   }
+}
+
+class Circle {
+
+}
+
+class Triangle {
+
+}
+
+class Rectangle {
+
+}
+
+class Colourer {
+
 }

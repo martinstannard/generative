@@ -28,41 +28,46 @@ class Polygon {
 }
 Polygon poly;                   // An object of type Polygon
 
-PShape createStar() {
+PShape createCircle(float radius) {
 
-  PShape star = createShape();  // First we make the PShape
-  star.beginShape();
-  star.noStroke();
-  star.fill(0, 127);
-  star.vertex(0, -50);
-  star.vertex(14, -20);
-  star.vertex(47, -15);
-  star.vertex(23, 7);
-  star.vertex(29, 40);
-  star.vertex(0, 25);
-  star.vertex(-29, 40);
-  star.vertex(-23, 7);
-  star.vertex(-47, -15);
-  star.vertex(-14, -20);
-  star.endShape(CLOSE);
+  PShape shape = createShape(ELLIPSE, 0, 0, radius, radius);  // First we make the PShape
+  return shape;
+}
 
-  // Make the Polygon object by passing in the reference to the PShape
-  //poly = new Polygon(star);
-  return star;
+PShape createRect(float height) {
+
+  PShape shape = createShape(RECT, -height/2, -height/2, height, height);  // First we make the PShape
+  return shape;
+}
+
+PShape createHalfRect(float height) {
+
+  PShape shape = createShape(RECT, -height/2, -height/2, height, height/2);  // First we make the PShape
+  return shape;
+}
+
+color randColor() {
+  color[] colors = new color[6];
+  colors[0] =  color(255, 0, 0);
+  colors[1] =  color(0, 255, 0);
+  colors[2] =  color(0, 0, 255);
+  colors[3] =  color(255, 255, 0);
+  colors[4] =  color(255, 0, 255);
+  colors[5] =  color(0, 255, 255);
+  return colors[int(random(6))];
 }
 
 void setup() {
   fill(black);
-  fillGrid(50, 45);
+  fillGrid(50, 90);
   size(400, 400);
   noStroke();
   rectMode(CENTER);
-  //createStar();
 }
 
 void draw() {
   tick++;
-  background(white);
+  background(black);
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
       grid[i][j].display();
@@ -104,12 +109,19 @@ class Cell {
     rot = irot;
     side = iside;
     ang = 0.0;
-    //p = createStar();
-    p = new Polygon(createStar());
+    p = new Polygon(selectShape());
   }
 
-  void move() {
-    ang += rot;
+  PShape selectShape() {
+    fill(randColor());
+    float r = random(3);
+    if (r < 1) {
+      return createCircle(side / 2);
+    }
+    if (r < 2) {
+      return createRect(side / 2);
+    }
+    return createHalfRect(side / 2);
   }
 
   void display() {

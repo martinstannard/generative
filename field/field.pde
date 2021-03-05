@@ -4,8 +4,8 @@ color black = color(0, 0, 0);
 color white = color(255, 255, 255);
 
 float c = 0.0;
-int rows = 10;
-int cols = 10;
+int rows = 20;
+int cols = 20;
 int side = 400;
 Cell[][] grid = new Cell[rows][cols];
 
@@ -46,6 +46,12 @@ PShape createHalfRect(float height) {
   return shape;
 }
 
+PShape createQrtrRect(float height) {
+
+  PShape shape = createShape(RECT, -height/2, -height/2, height/2, height/2);  // First we make the PShape
+  return shape;
+}
+
 color randColor() {
   color[] colors = new color[6];
   colors[0] =  color(255, 0, 0);
@@ -59,7 +65,7 @@ color randColor() {
 
 void setup() {
   fill(black);
-  fillGrid(50, 90);
+  fillGrid(20, 40);
   size(400, 400);
   noStroke();
   rectMode(CENTER);
@@ -114,19 +120,25 @@ class Cell {
 
   PShape selectShape() {
     fill(randColor());
-    float r = random(3);
-    if (r < 1) {
-      return createCircle(side / 2);
+    int r = int(random(4));
+    switch (r) {
+      case 0:
+        return createCircle(side / 2);
+      case 1:
+        return createRect(side / 2);
+      case 2:
+        return createHalfRect(side / 2);
+      case 3:
+        return createQrtrRect(side / 2);
+      default:
+        return createCircle(side / 2);
     }
-    if (r < 2) {
-      return createRect(side / 2);
-    }
-    return createHalfRect(side / 2);
   }
 
   void display() {
     push();
     translate(x, y);
+    rotate(int(random(4)) * HALF_PI);
     //translate(0, tick * rot);
     //rotate(ang*4.0);
     //scale(sin(ang));
@@ -136,18 +148,3 @@ class Cell {
   }
 }
 
-class Circle {
-
-}
-
-class Triangle {
-
-}
-
-class Rectangle {
-
-}
-
-class Colourer {
-
-}

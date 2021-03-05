@@ -1,12 +1,13 @@
-color red = color(255, 0, 0);
-color blue = color(0, 0, 255);
 color black = color(0, 0, 0);
-color white = color(255, 255, 255);
 
 float c = 0.0;
-int rows = 20;
-int cols = 20;
-int side = 400;
+int canvasSize = 400;
+int spacing = 50;
+int gap = 0;
+int rows = (canvasSize / spacing) + 1;
+int cols = (canvasSize / spacing) + 1;
+int cellSize = spacing - gap;
+
 Cell[][] grid = new Cell[rows][cols];
 
 int tick = 0;
@@ -14,7 +15,10 @@ int frames = 0;
 int maxFrames = 180;
 
 boolean record = false;
-boolean stop = true;
+boolean stop = false;
+
+int colorCount = 8;
+color[] colors = new color[colorCount];
 
 class Polygon {
   PShape s;
@@ -26,52 +30,87 @@ class Polygon {
     shape(s);
   }
 }
-Polygon poly;                   // An object of type Polygon
 
 PShape createCircle(float radius) {
 
-  PShape shape = createShape(ELLIPSE, 0, 0, radius, radius);  // First we make the PShape
+  PShape shape = createShape(ELLIPSE, 0, 0, radius, radius);
   return shape;
 }
 
 PShape createSmallCircle(float radius) {
 
-  PShape shape = createShape(ELLIPSE, -radius/4, -radius/4, radius/2, radius/2);  // First we make the PShape
+  PShape shape = createShape(ELLIPSE, -radius/4, -radius/4, radius/2, radius/2);
   return shape;
+}
+
+PShape createTwoSmallCircle(float radius) {
+
+  PShape g = createShape(GROUP);
+  PShape one = createShape(ELLIPSE, -radius/4, -radius/4, radius/2, radius/2);
+  g.addChild(one);
+  PShape two = createShape(ELLIPSE, -radius/4, +radius/4, radius/2, radius/2);
+  g.addChild(two);
+  return g;
+}
+
+PShape createThreeSmallCircle(float radius) {
+
+  PShape g = createShape(GROUP);
+  PShape one = createShape(ELLIPSE, -radius/4, -radius/4, radius/2, radius/2);
+  g.addChild(one);
+  PShape two = createShape(ELLIPSE, -radius/4, +radius/4, radius/2, radius/2);
+  g.addChild(two);
+  PShape three = createShape(ELLIPSE, +radius/4, -radius/4, radius/2, radius/2);
+  g.addChild(three);
+  return g;
 }
 
 PShape createRect(float height) {
 
-  PShape shape = createShape(RECT, -height/2, -height/2, height, height);  // First we make the PShape
+  PShape shape = createShape(RECT, -height/2, -height/2, height, height);
   return shape;
 }
 
 PShape createHalfRect(float height) {
 
-  PShape shape = createShape(RECT, -height/2, -height/2, height, height/2);  // First we make the PShape
+  PShape shape = createShape(RECT, -height/2, -height/2, height, height/2);
   return shape;
 }
 
 PShape createQrtrRect(float height) {
 
-  PShape shape = createShape(RECT, -height/2, -height/2, height/2, height/2);  // First we make the PShape
+  PShape shape = createShape(RECT, -height/2, -height/2, height/2, height/2);
   return shape;
 }
 
+PShape createTwoQrtrRect(float height) {
+
+  PShape g = createShape(GROUP);
+  PShape one = createShape(RECT, -height/2, -height/2, height/2, height/2);
+  g.addChild(one);
+  PShape two = createShape(RECT, 0, 0, height/2, height/2);
+  g.addChild(two);
+  return g;
+}
+
+void populateColors() {
+  colorMode(HSB, 100, 100, 100, 100);
+  float s = random(100);
+  float v = random(100);
+
+  for (int i = 0; i < colorCount; i++) {
+    colors[i] =  color(random(100), s, v);
+  };
+}
+
 color randColor() {
-  color[] colors = new color[6];
-  colors[0] =  color(255, 0, 0);
-  colors[1] =  color(0, 255, 0);
-  colors[2] =  color(0, 0, 255);
-  colors[3] =  color(255, 255, 0);
-  colors[4] =  color(255, 0, 255);
-  colors[5] =  color(0, 255, 255);
-  return colors[int(random(6))];
+  return colors[int(random(colorCount))];
 }
 
 void setup() {
+  populateColors();
   fill(black);
-  fillGrid(20, 40);
+  fillGrid(spacing, cellSize);
   size(400, 400);
   noStroke();
   rectMode(CENTER);
@@ -108,7 +147,6 @@ class Cell {
   int x;
   int y;
   float rot;
-  float ang;
   float side;
   Polygon p;
 
@@ -117,26 +155,31 @@ class Cell {
     y = iy;
     rot = int(random(4)) * HALF_PI;
     side = iside;
-    ang = 0.0;
     p = new Polygon(selectShape());
   }
 
   PShape selectShape() {
     fill(randColor());
-    int r = int(random(5));
+    int r = int(random(8));
     switch (r) {
       case 0:
-        return createCircle(side / 2);
+        return createCircle(side);
       case 1:
-        return createRect(side / 2);
+        return createRect(side);
       case 2:
-        return createHalfRect(side / 2);
+        return createHalfRect(side);
       case 3:
-        return createQrtrRect(side / 2);
+        return createQrtrRect(side);
       case 4:
-        return createSmallCircle(side / 2);
+        return createSmallCircle(side);
+      case 5:
+        return createTwoSmallCircle(side);
+      case 6:
+        return createThreeSmallCircle(side);
+      case 7:
+        return createTwoQrtrRect(side);
       default:
-        return createCircle(side / 2);
+        return createCircle(side/2);
     }
   }
 

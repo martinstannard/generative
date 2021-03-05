@@ -34,6 +34,12 @@ PShape createCircle(float radius) {
   return shape;
 }
 
+PShape createSmallCircle(float radius) {
+
+  PShape shape = createShape(ELLIPSE, -radius/4, -radius/4, radius/2, radius/2);  // First we make the PShape
+  return shape;
+}
+
 PShape createRect(float height) {
 
   PShape shape = createShape(RECT, -height/2, -height/2, height, height);  // First we make the PShape
@@ -93,10 +99,7 @@ void fillGrid(int spacing, int length) {
   float dir = 1.0;
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
-      if (j % 2 == 0) {
-        dir = dir * -1.0;
-      }
-      grid[i][j] = new Cell(0 + (i * spacing), 0 + (j * spacing), dir, length);
+      grid[i][j] = new Cell(0 + (i * spacing), 0 + (j * spacing), length);
     }
   }
 }
@@ -109,10 +112,10 @@ class Cell {
   float side;
   Polygon p;
 
-  Cell(int ix, int iy, float irot, float iside) {
+  Cell(int ix, int iy, float iside) {
     x = ix;
     y = iy;
-    rot = irot;
+    rot = int(random(4)) * HALF_PI;
     side = iside;
     ang = 0.0;
     p = new Polygon(selectShape());
@@ -120,7 +123,7 @@ class Cell {
 
   PShape selectShape() {
     fill(randColor());
-    int r = int(random(4));
+    int r = int(random(5));
     switch (r) {
       case 0:
         return createCircle(side / 2);
@@ -130,6 +133,8 @@ class Cell {
         return createHalfRect(side / 2);
       case 3:
         return createQrtrRect(side / 2);
+      case 4:
+        return createSmallCircle(side / 2);
       default:
         return createCircle(side / 2);
     }
@@ -138,7 +143,7 @@ class Cell {
   void display() {
     push();
     translate(x, y);
-    rotate(int(random(4)) * HALF_PI);
+    rotate(rot);
     //translate(0, tick * rot);
     //rotate(ang*4.0);
     //scale(sin(ang));

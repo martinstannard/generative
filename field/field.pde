@@ -1,22 +1,22 @@
-color bg = color(0, 0, 0);
+color bg;
 
 float c = 0.0;
-int canvasSize = 800;
-int spacing = 100;
+int canvasSize = 400;
+int spacing = 80;
 int gap = 5;
 int rows = (canvasSize / spacing) + 1;
 int cols = (canvasSize / spacing) + 1;
 int cellSize = spacing - gap;
-int groupCount = 2;
+int groupCount = 3;
 
 Cell[][] grid = new Cell[rows][cols];
 
 int tick = 0;
 int frames = 0;
-int maxFrames = 180;
+int maxFrames = 4;
 
-boolean record = false;
-boolean stop = false;
+boolean record = true;
+boolean stop = true;
 
 int colorCount = 8;
 color[] colors = new color[colorCount];
@@ -45,9 +45,39 @@ PShape halfCircle(float radius) {
   PShape c = createShape(ELLIPSE, 0, 0, radius, radius);
   g.addChild(c);
   c.setFill(randColor());
-  PShape r = createShape(RECT, -radius/2, -radius/2, radius, radius/2);
+  PShape r = createShape(RECT, -radius/2-1, -radius/2-1, radius+1, radius/2+1);
   g.addChild(r);
   r.setFill(bg);
+  return g;
+}
+
+PShape twoQrtrCircle(float radius) {
+
+  PShape g = createShape(GROUP);
+  PShape c = createShape(ELLIPSE, 0, 0, radius, radius);
+  g.addChild(c);
+  c.setFill(randColor());
+  PShape b1 = createShape(RECT, -radius/2-1, -radius/2-1, radius/2+1, radius/2+1);
+  g.addChild(b1);
+  b1.setFill(bg);
+  PShape b2 = createShape(RECT, 0, 0, radius/2+1, radius/2+1);
+  g.addChild(b2);
+  b2.setFill(bg);
+  return g;
+}
+
+PShape qrtrCircle(float radius) {
+
+  PShape g = createShape(GROUP);
+  PShape c = createShape(ELLIPSE, 0, 0, radius, radius);
+  g.addChild(c);
+  c.setFill(randColor());
+  PShape b1 = createShape(RECT, -radius/2-1, -radius/2-1, radius+1, radius/2+1);
+  g.addChild(b1);
+  b1.setFill(bg);
+  PShape b2 = createShape(RECT, 0, 0, radius/2+1, radius/2+1);
+  g.addChild(b2);
+  b2.setFill(bg);
   return g;
 }
 
@@ -136,15 +166,19 @@ PShape createTwoQrtrRect(float height) {
 
 void populateColors() {
   colorMode(HSB, 100, 100, 100, 100);
-  for (int i = 0; i < colorCount; i++) {
-    float s = random(20, 80);
-    float v = random(50, 70);
-    colors[i] =  color(random(100), s, v);
+  colors[0] =  color(random(100), random(0, 50), random(0, 30));
+  float h = random(100);
+  float jump = random(3, 20);
+  for (int i = 1; i < colorCount; i++) {
+    float s = random(30, 90);
+    float v = random(50, 80);
+    colors[i] =  color(h, s, v);
+    h = (h + jump) % 100.0;
   };
 }
 
 color randColor() {
-  return colors[int(random(colorCount))];
+  return colors[int(random(colorCount - 1)) + 1];
 }
 
 void keyPressed() {
@@ -154,31 +188,31 @@ void keyPressed() {
   }
 }
 void setup() {
+  populateColors();
+  bg = colors[0];
   noStroke();
   fill(bg);
   smooth(2);
-  populateColors();
   fillGrid(spacing, cellSize);
-  size(800, 800);
+  size(400, 400);
   rectMode(CENTER);
 }
 
 void draw() {
-  tick++;
   background(bg);
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
       grid[i][j].display();
-//      grid[i][j].move();
     }
   }
   if (record) {
-    saveFrame("#####.png");
+    saveFrame("######.png");
   }
-  frames++;
-  if (stop && frames > maxFrames) {
+  if (stop && frames == maxFrames - 1) {
     exit();
   }
+  frames++;
+  tick++;
 }
 
 void fillGrid(int spacing, int length) {
@@ -218,30 +252,36 @@ class Cell {
   }
 
   PShape selectShape() {
-    int r = int(random(10));
+    int r = int(random(13));
     switch (r) {
       case 0:
         return circle(side);
       case 1:
-        return createRect(side);
-      case 2:
-        return createHalfRect(side);
-      case 3:
-        return createQrtrRect(side);
-      case 4:
-        return createSmallCircle(side);
-      case 5:
-        return createTwoSmallCircle(side);
-      case 6:
-        return createThreeSmallCircle(side);
-      case 7:
-        return createTwoQrtrRect(side);
-      case 8:
         return halfCircle(side);
-      case 9:
+      case 2:
+        return createSmallCircle(side);
+      case 3:
+        return createTwoSmallCircle(side);
+      case 4:
+        return createThreeSmallCircle(side);
+      case 5:
         return twoOpCircs(side);
+      case 6:
+        return qrtrCircle(side);
+      case 7:
+        return createRect(side);
+      case 8:
+        return createHalfRect(side);
+      case 9:
+        return createTwoQrtrRect(side);
+      case 10:
+        return createQrtrRect(side);
+      case 11:
+        return twoQrtrCircle(side);
+      case 12:
+        return qrtrCircle(side);
       default:
-        return circle(side/2);
+        return circle(side);
     }
   }
 
@@ -249,9 +289,9 @@ class Cell {
     push();
     translate(x, y);
     rotate(rot * dir);
-    if (tick % 20 == 0) {
-      rot += HALF_PI;
-    }
+    rot += HALF_PI;
+    // if (tick % 10 == 0) {
+    // }
     //translate(0, tick * rot);
     //rotate(ang*4.0);
     //scale(sin(ang));

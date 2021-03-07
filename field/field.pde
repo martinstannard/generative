@@ -1,13 +1,16 @@
 color bg;
 
 float c = 0.0;
-int canvasSize = 400;
-int spacing = 80;
+int canvasSize = 840;
+int count = int(random(12)) + 1;
+// int[] spacings = {200, 100, 50, 80, 40, 25};
+int[] spacings = {20, 21, 24, 28, 30, 35, 40, 42, 56, 60, 70, 84, 105, 120, 140, 168, 210, 280, 420};
+int spacing = spacings[int(random(19))];
 int gap = 5;
 int rows = (canvasSize / spacing) + 1;
 int cols = (canvasSize / spacing) + 1;
 int cellSize = spacing - gap;
-int groupCount = 3;
+int groupCount = int(random(3)) + 1;
 
 Cell[][] grid = new Cell[rows][cols];
 
@@ -45,7 +48,7 @@ PShape halfCircle(float radius) {
   PShape c = createShape(ELLIPSE, 0, 0, radius, radius);
   g.addChild(c);
   c.setFill(randColor());
-  PShape r = createShape(RECT, -radius/2-1, -radius/2-1, radius+1, radius/2+1);
+  PShape r = createShape(RECT, -radius/2-2, -radius/2-2, radius/2+2, radius/2+2);
   g.addChild(r);
   r.setFill(bg);
   return g;
@@ -57,10 +60,10 @@ PShape twoQrtrCircle(float radius) {
   PShape c = createShape(ELLIPSE, 0, 0, radius, radius);
   g.addChild(c);
   c.setFill(randColor());
-  PShape b1 = createShape(RECT, -radius/2-1, -radius/2-1, radius/2+1, radius/2+1);
+  PShape b1 = createShape(RECT, -radius/2-2, -radius/2-2, radius/2+2, radius/2+2);
   g.addChild(b1);
   b1.setFill(bg);
-  PShape b2 = createShape(RECT, 0, 0, radius/2+1, radius/2+1);
+  PShape b2 = createShape(RECT, 0, 0, radius/2+2, radius/2+2);
   g.addChild(b2);
   b2.setFill(bg);
   return g;
@@ -72,10 +75,10 @@ PShape qrtrCircle(float radius) {
   PShape c = createShape(ELLIPSE, 0, 0, radius, radius);
   g.addChild(c);
   c.setFill(randColor());
-  PShape b1 = createShape(RECT, -radius/2-1, -radius/2-1, radius+1, radius/2+1);
+  PShape b1 = createShape(RECT, -radius/2-2, -radius/2-2, radius/2+2, radius/2+2);
   g.addChild(b1);
   b1.setFill(bg);
-  PShape b2 = createShape(RECT, 0, 0, radius/2+1, radius/2+1);
+  PShape b2 = createShape(RECT, 0, 0, radius/2+2, radius/2+2);
   g.addChild(b2);
   b2.setFill(bg);
   return g;
@@ -166,7 +169,7 @@ PShape createTwoQrtrRect(float height) {
 
 void populateColors() {
   colorMode(HSB, 100, 100, 100, 100);
-  colors[0] =  color(random(100), random(0, 50), random(0, 30));
+  colors[0] =  color(random(100), random(20, 50), random(0, 100));
   float h = random(100);
   float jump = random(3, 20);
   for (int i = 1; i < colorCount; i++) {
@@ -194,7 +197,7 @@ void setup() {
   fill(bg);
   smooth(2);
   fillGrid(spacing, cellSize);
-  size(400, 400);
+  size(840, 840);
   rectMode(CENTER);
 }
 

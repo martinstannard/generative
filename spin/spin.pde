@@ -2,14 +2,14 @@ color fg = color(120, 160, 60);
 color bg = color(67, 32, 99);
 
 float c = 0.0;
-int canvasSize = 840;
+int canvasSize = 400;
 float speed = 0.04;
 float frameCount = 50;
 
 int ringCount = 10;
-int ringGap = 30;
-int circSize = 20;
-int circDiv = 30;
+int ringGap = 15;
+int circSize = 10;
+int circDiv = 15;
 
 Ring[] rings = new Ring[ringCount];
 
@@ -47,7 +47,7 @@ void setup() {
   createRings(ringCount);
   fill(bg);
   smooth(2);
-  size(840, 840);
+  size(400, 400);
   rectMode(CENTER);
 }
 
@@ -62,8 +62,7 @@ void draw() {
   }
   if (stop && frames == frameCount) {
     exit();
-  }
-  frames++;
+  } frames++;
   tick++;
 }
 
@@ -88,11 +87,11 @@ class Ring {
 
   Polygon builder(int index, int circlesPerRing) {
     int circles = int(TWO_PI * ringGap * index / circDiv);
-    float a = TWO_PI / (circlesPerRing - 1);
+    float a = TWO_PI / (circlesPerRing);
     PShape g = createShape(GROUP);
     for(int i = 0; i < circlesPerRing; i++) {
-      int x = int(sin(a * i) * ((index * ringGap) + 30));
-      int y = int(cos(a * i) * ((index * ringGap) + 30));
+      int x = int(sin(a * i) * ((index * ringGap) + 10));
+      int y = int(cos(a * i) * ((index * ringGap) + 10));
       translate(x, y);
       rotate(a);
       PShape s = circle(x, y, circSize);

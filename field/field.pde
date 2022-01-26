@@ -5,33 +5,36 @@ ColorPalette palette;
 color bg;
 
 float c = 0.0;
-int pixels = 5000;
-int canvasSize = 5000;
-int count = int(random(12)) + 1;
-// int[] spacings = {200, 100, 50, 80, 40, 25};
-int[] sides = {2, 3, 4, 5, 8, 10, 20, 25};
-//int[] spacings = {50, 100, 200, 400, 500, 1000, 1250, 2500, 5000};
-//int[] spacings = {56, 60, 70, 84, 105, 120,140, 168, 210, 280, 420};
-//int[] spacings = {20, 21, 24, 28, 30, 35, 40, 42, 56, 60, 70, 84, 105, 120, 140, 168, 210, 280, 420};
-// int spacing = spacings[int(random(9))];
+int pixels = 5040;
+int canvasSize = 5040;
+
+int[] sides = {2, 3, 4, 5, 6, 7, 8, 9, 10, 12};
 int side = sides[int(random(sides.length))];
-int gap = int(random(8)) + 2;
+
+int[] gaps = {0, 0, 0, 0, 20, 30, 40, 60};
+int gap = gaps[int(random(gaps.length))];
+
+int[] groups = {1, 1, 2, 2, 3, 4, 5, 20};
+int groupCount = groups[int(random(groups.length))];
+
+int[] colorCounts = {2, 3, 3, 4, 4, 4, 5, 5, 5, 5};
+int colorCount = colorCounts[int(random(colorCounts.length))];
+color[] colors = new color[colorCount];
+
 int spacing = cellSpacing(side, canvasSize);
+int cellSize = spacing - gap;
+
 int rows = (canvasSize / spacing) + 1;
 int cols = (canvasSize / spacing) + 1;
-int cellSize = spacing - gap;
-int groupCount = int(random(3)) + 1;
 
 Cell[][] grid = new Cell[rows][cols];
+
 int tick = 0;
 int frames = 0;
 int maxFrames = 1;
 
 boolean record = true;
 boolean stop = true;
-
-int colorCount = 5;
-color[] colors = new color[colorCount];
 
 int cellSpacing(int sides, int canvasSize) {
   return (canvasSize /  sides);
@@ -196,26 +199,14 @@ PShape empty(float size) {
 /// END OF SHAPES
 
 void populateColors() {
-  //colorMode(HSB, 100, 100, 100, 100);
-  //colors[0] =  color(random(100), random(20, 50), random(0, 100));
-  //colorMode(RGB, 100 ,100, 100);
-  //colors[0] =  color(100, 100, 100);
-  // float h = random(100);
-  // float jump = random(3, 20);
-  // for (int i = 1; i < colorCount; i++) {
-  //   float s = random(30, 90);
-  //   float v = random(50, 80);
-  //   colors[i] =  color(h, s, v);
-  //   h = (h + jump) % 100.0;
-  // };
-  for (int i = 0; i < palette.colors.length; i++) {
+  for (int i = 0; i < colors.length; i++) {
     colors[i] = palette.colors[i];
   };
   shuffle(colors);
 }
 
 color randColor() {
-  return colors[int(random(palette.colors.length - 1)) + 1];
+  return colors[int(random(colors.length - 1)) + 1];
 }
 
 void keyPressed() {
@@ -246,13 +237,11 @@ void setup() {
   setupShapes(shapeCount, nullCount);
   bg = colors[0];
 
-  // bg = color(0, 0, 100);
-
   noStroke();
   fill(bg);
   smooth(2);
   fillGrid(spacing, cellSize);
-  size(5000, 5000);
+  size(5040, 5040);
   rectMode(CENTER);
 }
 
@@ -263,7 +252,8 @@ void draw() {
       grid[i][j].display();
     }
   }
-  if (record) {saveFrame("######.png");
+  if (record) {
+    saveFrame("######.png");
   }
   if (stop && frames == maxFrames - 1) {
     exit();
@@ -352,13 +342,6 @@ class Cell {
     push();
     translate(x, y);
     rotate(rot * dir);
-    rot += HALF_PI;
-    // if (tick % 10 == 0) {
-    // }
-    //translate(0, tick * rot);
-                                //rotate(ang*4.0);
-    //scale(sin(ang));
-    // rect(0, 0, side, side);
     p.display();
     pop();
   }

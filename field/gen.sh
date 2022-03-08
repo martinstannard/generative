@@ -6,7 +6,7 @@ timestamp() {
 
 
 counter=1
-while [ $counter -le 20 ]
+while [ $counter -le 200 ]
 do
     echo $counter
     ~/bin/processing/processing-java --force --sketch=/home/martins/code/generative/field/ --run --output=/home/martins/code/generative/field/output

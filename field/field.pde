@@ -8,16 +8,16 @@ float c = 0.0;
 int pixels = 5040;
 int canvasSize = 5040;
 
-int[] sides = {2, 3, 4, 5, 6, 7, 8, 9, 10, 12};
+int[] sides = {2, 3, 4, 5, 6, 7, 8, 9, 10};
 int side = sides[int(random(sides.length))];
 
 int[] gaps = {0, 0, 0, 0, 20, 30, 40, 60};
 int gap = gaps[int(random(gaps.length))];
 
-int[] groups = {1, 1, 2, 2, 3, 4, 5, 20};
+int[] groups = {1, 2, 2, 3, 4, 5, 20};
 int groupCount = groups[int(random(groups.length))];
 
-int[] colorCounts = {2, 3, 3, 4, 4, 4, 5, 5, 5, 5};
+int[] colorCounts = {3, 4, 4, 5, 5, 5, 5};
 int colorCount = colorCounts[int(random(colorCounts.length))];
 color[] colors = new color[colorCount];
 
@@ -231,9 +231,7 @@ int shapeCount = int(random(16))+1;
 int nullCount = int(random(5));
 
 void setup() {
-  palette = new ColorPalette(this);
-  palette.getPalette();
-  populateColors();
+  makePalette();
   setupShapes(shapeCount, nullCount);
   bg = colors[0];
 
@@ -268,6 +266,16 @@ void fillGrid(int spacing, int length) {
     for (int j = 0; j < cols; j++) {
       grid[i][j] = new Cell(0 + (i * spacing), 0 + (j * spacing), length);
     }
+  }
+}
+
+void makePalette() {
+  if (random(2) < 0.2) {
+    makeGradientPalette();
+  } else {
+    palette = new ColorPalette(this);
+    palette.getPalette();
+    populateColors();
   }
 }
 
@@ -354,4 +362,20 @@ void shuffle(int[] array) { // mix-up the array
     array[i] = array[j];
     array[j] = temp;
   }
+}
+void makeGradientPalette() {
+  colorMode(HSB, 100, 100, 100, 100);
+  colors[0] =  color(random(100), random(20, 50), random(0, 100));
+  float h = random(100);
+  float hueJump = random(3, 6);
+  float sat = random(50, 70);
+  float satJump = random(3, 10);
+  float bright = random(50, 70);
+  float brightJump = random(3, 10);
+  for (int i = 1; i < colorCount; i++) {
+    colors[i] =  color(h, sat, bright);
+    h = (h + hueJump) % 100.0;
+    sat = (sat + satJump) % 100.0;
+    bright = (bright + brightJump) % 100.0;
+  };
 }
